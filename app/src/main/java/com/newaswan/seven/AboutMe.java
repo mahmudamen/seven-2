@@ -56,7 +56,7 @@ public class AboutMe extends AppCompatActivity {
                 TextView me = (TextView)findViewById(R.id.textView6);
                 Typeface fme = Typeface.createFromAsset(getAssets(),"fonts/truelies.ttf");
                 me.setTypeface(fme);
-                me.setText("MahmudAmen");
+                me.setText("Anonymo");
             }
 
             @Override

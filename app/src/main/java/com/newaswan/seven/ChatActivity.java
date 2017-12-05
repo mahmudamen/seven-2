@@ -1,7 +1,8 @@
 package com.newaswan.seven;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -31,16 +32,25 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        Firebase.setAndroidContext(this);
+
         firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() == null){
+            //that means user is already logged in
+            //so close this activity
+            finish();
+
+            //and open profile activity
+            startActivity(new Intent(getApplicationContext(), SinginActivity.class));
+        }else {
+            final FirebaseUser user = firebaseAuth.getCurrentUser();
+            reference1 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + user.getUid() + "_" + "OUut05jTcHd1mG1VtTlZ1aIMylB2");
+            reference2 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + "OUut05jTcHd1mG1VtTlZ1aIMylB2" + "_" + user.getUid());
+
         layout = (LinearLayout)findViewById(R.id.layout1);
         sendButton = (ImageView)findViewById(R.id.sendButton);
         messageArea = (EditText)findViewById(R.id.messageArea);
         scrollView = (ScrollView)findViewById(R.id.scrollView);
-
-        Firebase.setAndroidContext(this);
-       final FirebaseUser user = firebaseAuth.getCurrentUser();
-        reference1 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + user.getUid() + "_" + "Admin");
-        reference2 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + "Admin" + "_" + user.getUid());
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +75,7 @@ public class ChatActivity extends AppCompatActivity {
                 String userName = map.get("user").toString();
 
                 if(userName.equals(user.getUid())){
-                    addMessageBox("You:-\n" + message, 1);
+                    addMessageBox(user.getEmail() + ":-\n" + message, 1);
                 }
                 else{
                     addMessageBox("Admin" + ":-\n" + message, 2);
@@ -93,7 +103,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-
+}
     public void addMessageBox(String message, int type){
         TextView textView = new TextView(ChatActivity.this);
         textView.setText(message);
