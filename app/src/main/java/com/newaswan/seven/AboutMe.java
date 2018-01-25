@@ -56,7 +56,7 @@ public class AboutMe extends AppCompatActivity {
                 TextView me = (TextView)findViewById(R.id.textView6);
                 Typeface fme = Typeface.createFromAsset(getAssets(),"fonts/truelies.ttf");
                 me.setTypeface(fme);
-                me.setText("Anonymo");
+                me.setText("Aswan App ");
             }
 
             @Override
@@ -66,8 +66,8 @@ public class AboutMe extends AppCompatActivity {
                 TextView textView5 =(TextView)findViewById(R.id.textView5);
                 Typeface typeface=Typeface.createFromAsset(getAssets(),"fonts/alyoum.ttf");
                 textView3.setText("هيئة تنمية المجتمعات العمرانية الجديدة ");
-                textView4.setText("جهاز مدينة اسوان الجديدة ");
-                textView5.setText("مركز المعلومات ");
+                textView5.setText("جهاز مدينة اسوان الجديدة ");
+                textView4.setText("مركز المعلومات ");
                 textView3.setTypeface(typeface);
                 textView4.setTypeface(typeface);
                 textView5.setTypeface(typeface);

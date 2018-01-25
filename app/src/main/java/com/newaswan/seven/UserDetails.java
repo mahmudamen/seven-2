@@ -5,7 +5,10 @@ package com.newaswan.seven;
  */
 
 public class UserDetails {
+    static String email ="";
     static String username = "";
     static String password = "";
     static String chatWith = "";
+
+
 }

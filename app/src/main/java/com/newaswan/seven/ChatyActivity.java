@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,6 +22,8 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -29,19 +32,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatyActivity extends AppCompatActivity implements OnCompleteListener {
     LinearLayout layout;
+    private FirebaseAuth mAuth;
     ImageView sendButton;
     FloatingActionButton fabuser;
     EditText messageArea;
     ScrollView scrollView;
-    Firebase reference1, reference2 , reference3;
+    Firebase reference1, reference2;
     private FirebaseAuth firebaseAuth;
     String chatID = "chatread";
     static boolean isInitialized = false;
@@ -65,65 +67,40 @@ public class ChatActivity extends AppCompatActivity {
         conncet(currentNetworkInfo);
         Firebase.setAndroidContext(this);
         final Intent i = new Intent(this,Users.class);
-        fabuser = (FloatingActionButton)findViewById(R.id.fablist);
-        firebaseAuth = FirebaseAuth.getInstance();
-        if(firebaseAuth.getCurrentUser() == null){
-            //that means user is already logged in
-            //so close this activity
-            finish();
 
-            //and open profile activity
-            startActivity(new Intent(getApplicationContext(), SignupActivity.class));
+        mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
-        }else  {
-            conncet(currentNetworkInfo);
-            final FirebaseUser user = firebaseAuth.getCurrentUser();
-            List<String> s = Arrays.asList("hany230000@gmail.com", "mahmudamen@gmail.com");
-            if ( s.contains(user.getEmail()))  {
-                fabuser.setVisibility(View.VISIBLE);
 
-            }else{
-                fabuser.setVisibility(View.INVISIBLE);
-                UserDetails.username = usernameFromEmail(user.getEmail());
-                UserDetails.chatWith = "hany230000";
-            }
-            fabuser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(i);
-                }
-            });
             reference1 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + UserDetails.username + "_" + UserDetails.chatWith);
             reference2 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + UserDetails.chatWith + "_" + UserDetails.username);
-            reference3 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + "mahmudamen" + "_" + UserDetails.username);
 
-        layout = (LinearLayout)findViewById(R.id.layout1);
-        sendButton = (ImageView)findViewById(R.id.sendButton);
-        messageArea = (EditText)findViewById(R.id.messageArea);
-        scrollView = (ScrollView)findViewById(R.id.scrollView);
+            layout = (LinearLayout)findViewById(R.id.layout1);
+            sendButton = (ImageView)findViewById(R.id.sendButton);
+            messageArea = (EditText)findViewById(R.id.messageArea);
+            scrollView = (ScrollView)findViewById(R.id.scrollView);
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                conncet(currentNetworkInfo);
-                String messageText = messageArea.getText().toString();
-                SimpleDateFormat s = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-                String format = s.format(new Date());
-                if(!messageText.equals("")){
-                    Map<String, String> map = new HashMap<String, String>();
-                    map.put("message", messageText);
-                    map.put("user", UserDetails.username);
-                    map.put("id",user.getUid());
-                    map.put("email",user.getEmail());
-                    map.put("date",format);
-                    map.put("chatread","false");
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     conncet(currentNetworkInfo);
-                    reference1.push().setValue(map);
-                    reference2.push().setValue(map);
-                    reference3.push().setValue(map);
+                    String messageText = messageArea.getText().toString();
+                    SimpleDateFormat s = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                    String format = s.format(new Date());
+                    if(!messageText.equals("")){
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("message", messageText);
+                        map.put("user", UserDetails.username);
+                        map.put("id","anonymo");
+                        map.put("email","anonymous@ano.com");
+                        map.put("date",format);
+                        map.put("chatread","false");
+                        conncet(currentNetworkInfo);
+                        reference1.push().setValue(map);
+                        reference2.push().setValue(map);
+                    }
                 }
-            }
-        });
+            });
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             String UID = currentUser.getUid();
             DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
@@ -153,52 +130,52 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
-        reference1.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Map map = dataSnapshot.getValue(Map.class);
-                String message = map.get("message").toString();
-                String userName = map.get("user").toString();
-                String CreateDate = map.get("date").toString();
+            reference1.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Map map = dataSnapshot.getValue(Map.class);
+                    String message = map.get("message").toString();
+                    String userName = map.get("user").toString();
+                    String CreateDate = map.get("date").toString();
 
 
-                if(userName.equals(UserDetails.username)){
-                    conncet(currentNetworkInfo);
-                    addMessageBox(user.getEmail() + ":-\n" + message +"\n"+ CreateDate , 1);
+                    if(userName.equals(UserDetails.username)){
+                        conncet(currentNetworkInfo);
+                        addMessageBox(user.getEmail() + ":-\n" + message +"\n"+ CreateDate , 1);
+                    }
+                    else{
+                        conncet(currentNetworkInfo);
+                        addMessageBox(UserDetails.chatWith + ":-\n" + message +"\n"+ CreateDate , 2);
+                    }
                 }
-                else{
-                    conncet(currentNetworkInfo);
-                    addMessageBox(UserDetails.chatWith + ":-\n" + message +"\n"+ CreateDate , 2);
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
                 }
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-            }
+                }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            }
+                }
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
 
-            }
+                }
+            });
+        }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-}
     public void addMessageBox(String message, int type){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo currentNetworkInfo = connectivityManager.getActiveNetworkInfo();
         conncet(currentNetworkInfo);
-        TextView textView = new TextView(ChatActivity.this);
+        TextView textView = new TextView(ChatyActivity.this);
         textView.setText(message);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.setMargins(0, 0, 0, 10);
@@ -226,5 +203,10 @@ public class ChatActivity extends AppCompatActivity {
         } else {
             return email;
         }
+    }
+
+    @Override
+    public void onComplete(@NonNull Task task) {
+        
     }
 }
