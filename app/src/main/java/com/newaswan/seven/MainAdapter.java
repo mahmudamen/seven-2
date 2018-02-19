@@ -14,11 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.readystatesoftware.viewbadger.BadgeView;
 
 import java.util.List;
 
@@ -26,6 +28,8 @@ import java.util.List;
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyHoder> {
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
+    Button btnAnim2;
+    BadgeView badge4;
     List<PhotoModel> list;
     Context context;
     String vurl,vtitle,vshortdesc,vprice,vrating,vliq,vlongdesc;
@@ -193,6 +197,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyHoder> {
         TextView title,shordesc,price,rating,liq,longdesc;
         ImageView imageView,overflow;
         View.OnClickListener itemClickListener;
+
         public MyHoder(View itemView) {
             super(itemView);
             title = (TextView)itemView.findViewById(R.id.textViewTitle);
@@ -203,6 +208,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyHoder> {
             longdesc= (TextView)itemView.findViewById(R.id.textViewLongDesc);
             imageView = itemView.findViewById(R.id.imageView);
             overflow = itemView.findViewById(R.id.overflow);
+            btnAnim2 =  itemView.findViewById(R.id.button1);
+
         }
         public void setOnClickListener(View.OnClickListener ic){
             this.itemClickListener=ic;

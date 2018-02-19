@@ -255,8 +255,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         String namo  = editTextName.getText().toString().trim();
         String id = editTextID.getText().toString().trim();
         String land  = editTextLand.getText().toString().trim();
+        String chat = "0";
         // Write new user
-        writeNewUser( user.getUid() , name,id, user.getEmail(),namo,land);
+        writeNewUser( user.getUid() , name,id, user.getEmail(),namo,land,chat);
 
         // Go to MainActivity
         startActivity(new Intent(SignupActivity.this, MainActivity.class));
@@ -268,7 +269,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         String id = editTextID.getText().toString().trim();
         String land  = editTextLand.getText().toString().trim();
         // Write new user
-        writeNewUser( profile.getId() , name,id, profile.getName(),namo,land);
+        String chat = "0";
+        writeNewUser( profile.getId() , name,id, profile.getName(),namo,land,chat);
 
         // Go to MainActivity
         startActivity(new Intent(SignupActivity.this, MainActivity.class));
@@ -282,9 +284,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             return email;
         }
     }
-    private void writeNewUser(String userId,String name,String id,  String email ,String namo, String land) {
+    private void writeNewUser(String userId,String name,String id,  String email ,String namo, String land,String chat) {
 
-        User user = new User(userId, name,id ,email, namo,land);
+        User user = new User(userId, name,id ,email, namo,land,chat);
 
         mDatabase.child("users").child(name).setValue(user);
     }

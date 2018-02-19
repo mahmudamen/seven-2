@@ -26,7 +26,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -35,13 +37,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
+
 public class ChatActivity extends AppCompatActivity {
     LinearLayout layout;
     ImageView sendButton;
     FloatingActionButton fabuser;
     EditText messageArea;
+    int badgeCount;
     ScrollView scrollView;
-    Firebase reference1, reference2 , reference3;
+    Firebase reference1;
+    Firebase reference2;
+    Firebase reference3;
+    DatabaseReference reference4;
     private FirebaseAuth firebaseAuth;
     String chatID = "chatread";
     static boolean isInitialized = false;
@@ -73,7 +81,7 @@ public class ChatActivity extends AppCompatActivity {
             finish();
 
             //and open profile activity
-            startActivity(new Intent(getApplicationContext(), SignupActivity.class));
+            startActivity(new Intent(getApplicationContext(), SinginActivity.class));
 
         }else  {
             conncet(currentNetworkInfo);
@@ -97,10 +105,12 @@ public class ChatActivity extends AppCompatActivity {
             reference2 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + UserDetails.chatWith + "_" + UserDetails.username);
             reference3 = new Firebase("https://seven-1810b.firebaseio.com/messages/" + "mahmudamen" + "_" + UserDetails.username);
 
-        layout = (LinearLayout)findViewById(R.id.layout1);
-        sendButton = (ImageView)findViewById(R.id.sendButton);
-        messageArea = (EditText)findViewById(R.id.messageArea);
-        scrollView = (ScrollView)findViewById(R.id.scrollView);
+            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+            reference4  = mDatabase.child("users").child(UserDetails.username).child("chat");
+            layout = (LinearLayout)findViewById(R.id.layout1);
+            sendButton = (ImageView)findViewById(R.id.sendButton);
+            messageArea = (EditText)findViewById(R.id.messageArea);
+            scrollView = (ScrollView)findViewById(R.id.scrollView);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,11 +126,31 @@ public class ChatActivity extends AppCompatActivity {
                     map.put("id",user.getUid());
                     map.put("email",user.getEmail());
                     map.put("date",format);
-                    map.put("chatread","false");
+                    map.put("chatread","0");
                     conncet(currentNetworkInfo);
                     reference1.push().setValue(map);
                     reference2.push().setValue(map);
                     reference3.push().setValue(map);
+                    reference4.runTransaction(new Transaction.Handler() {
+                        @Override
+                        public Transaction.Result doTransaction(MutableData mutableData) {
+                            Long value = mutableData.getValue(Long.class);
+                            if (value == null) {
+                                mutableData.setValue(0);
+                            }
+                            else {
+                                mutableData.setValue(value + 1);
+                            }
+
+                            return Transaction.success(mutableData);
+                        }
+
+                        @Override
+                        public void onComplete(DatabaseError databaseError, boolean b, com.google.firebase.database.DataSnapshot dataSnapshot) {
+                            // Transaction completed
+                            Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+                        }
+                    });
                 }
             }
         });
@@ -161,6 +191,9 @@ public class ChatActivity extends AppCompatActivity {
                 String userName = map.get("user").toString();
                 String CreateDate = map.get("date").toString();
 
+
+
+              //  mDatabase.child("users").child(userName).child("chat").setValue(1);
 
                 if(userName.equals(UserDetails.username)){
                     conncet(currentNetworkInfo);
@@ -225,6 +258,44 @@ public class ChatActivity extends AppCompatActivity {
             return email.split("@")[0];
         } else {
             return email;
+        }
+    }
+    public void newMessageBox(){
+        String chatID = "chatread";
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null){
+            String UID = currentUser.getUid();
+            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+            Query query = rootRef.child("messages").child(UID).orderByChild(chatID).equalTo(false);
+            query.addChildEventListener(new com.google.firebase.database.ChildEventListener() {
+                @Override
+                public void onChildAdded(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildChanged(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
+                    boolean success = ShortcutBadger.applyCount(ChatActivity.this,badgeCount );
+                    startService(
+                            new Intent(ChatActivity.this, BadgeIntentService.class).putExtra("badgeCount", badgeCount)
+                    );
+                }
+
+                @Override
+                public void onChildRemoved(com.google.firebase.database.DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(com.google.firebase.database.DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 }
