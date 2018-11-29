@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/.App/newaswankey.jks
 /.idea/workspace.xml
 /.idea/libraries
 .DS_Store

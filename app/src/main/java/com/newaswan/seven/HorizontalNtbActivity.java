@@ -330,7 +330,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
     protected void onStart(){
         super.onStart();
         if (isConnected(context)){
-         //  setAutoUpdate();
+            setAutoUpdate();
         }
     }
     private void initUI() {
@@ -486,7 +486,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
         navigationTabBar.setModels(models);
         navigationTabBar.setViewPager(viewPager, 2);
         navigationTabBar.setTitleMode(NavigationTabBar.TitleMode.ACTIVE);
-        navigationTabBar.setBgColor(Color.parseColor("#ffc425"));
+        navigationTabBar.setBgColor(Color.parseColor("#fc8b4d"));
         navigationTabBar.setIsTitled(true);
         navigationTabBar.setIsTinted(false);
         navigationTabBar.setIsBadgeUseTypeface(true);
@@ -569,7 +569,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
 
         final CollapsingToolbarLayout collapsingToolbarLayout =
                 (CollapsingToolbarLayout) findViewById(R.id.toolbar);
-        collapsingToolbarLayout.setExpandedTitleColor(Color.parseColor("#ffc425"));
+        collapsingToolbarLayout.setExpandedTitleColor(Color.parseColor("#fc8b4d"));
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.parseColor("#3e0074"));
     }
     public  boolean isConnected(Context context){
@@ -947,7 +947,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
         final Typeface font = Typeface.createFromAsset(getAssets(), "fonts/boahmed-alhour-ar.ttf");
         final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb_horizontal);
         final Snackbar snackbar = Snackbar.make(navigationTabBar, "تأكد من الاتصال بالانترنت", Snackbar.LENGTH_SHORT);
-        snackbar.getView().setBackgroundColor(Color.parseColor("#ff0000"));
+        snackbar.getView().setBackgroundColor(Color.parseColor("#fc8b4d"));
         ((TextView) snackbar.getView().findViewById(R.id.snackbar_text))
                 .setTextColor(Color.parseColor("#ffffff"));
         ((TextView) snackbar.getView().findViewById(R.id.snackbar_text)).setTypeface(font);

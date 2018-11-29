@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'hitman'
-            storeFile file('~/Desktop/seven/AswanApps/newaswankey.jks')
+            storeFile file('newaswankey.jks')
             storePassword 'hitman'
         }
     }
@@ -14,11 +14,11 @@ android {
         applicationId "com.newaswan.seven"
         minSdkVersion 19
         targetSdkVersion 27
-        versionName '1.1.7'
+        versionName '1.1.8'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true //important
         signingConfig signingConfigs.config
-        versionCode 17
+        versionCode 18
     }
     buildTypes {
         release {
