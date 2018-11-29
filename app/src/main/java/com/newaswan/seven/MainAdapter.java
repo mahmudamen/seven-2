@@ -6,6 +6,7 @@ package com.newaswan.seven;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -56,8 +57,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyHoder> {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardmain, parent, false);
             vh = new MyHoder(v);
         } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.progressbar, parent, false);
-            vh = new ProgressViewHolder(v);
+
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardmain, parent, false);
+            vh = new MyHoder(v);
         }
         return (MyHoder) vh;
     }
@@ -107,22 +109,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyHoder> {
                     i.putExtra("Book",book);
                     context.startActivity(i);
                 }
-
-
             });
             //  holder.imageView.setImageResource(Integer.parseInt(mylist.getImage()));
             Glide.with(context).load(mylist.getImage()).into(holder.imageView);
-
-
-
         } else {
             ((ProgressViewHolder)list).progressBar.setVisibility(View.VISIBLE);
-
-
         }
-
-
-
     }
     public void getSelectedContextMenuItem(MenuItem item){
         this.openDetailActivity(item.getTitle().toString());
@@ -197,7 +189,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyHoder> {
         TextView title,shordesc,price,rating,liq,longdesc;
         ImageView imageView,overflow;
         View.OnClickListener itemClickListener;
-
+        final Typeface alyoum = Typeface.createFromAsset(context.getAssets(), "fonts/alyoum.ttf");
+        final Typeface agency = Typeface.createFromAsset(context.getAssets(), "fonts/annahar-bold-ar.otf");
+        final Typeface boahmed = Typeface.createFromAsset(context.getAssets(), "fonts/boahmed-alhour-ar.ttf");
         public MyHoder(View itemView) {
             super(itemView);
             title = (TextView)itemView.findViewById(R.id.textViewTitle);
@@ -210,6 +204,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MyHoder> {
             overflow = itemView.findViewById(R.id.overflow);
             btnAnim2 =  itemView.findViewById(R.id.button1);
 
+            title.setTypeface(boahmed);
+            shordesc.setTypeface(alyoum);
+            rating.setTypeface(alyoum);
+            price.setTypeface(alyoum);
         }
         public void setOnClickListener(View.OnClickListener ic){
             this.itemClickListener=ic;

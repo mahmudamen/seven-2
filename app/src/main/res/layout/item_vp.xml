@@ -5,15 +5,10 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 app:layout_behavior="@string/appbar_scrolling_view_behavior">
-<ImageView
-    android:id="@+id/imageView2"
-    style="@style/BackGroundImageView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true"
-    app:srcCompat="@drawable/panbg" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipyrefreshlayout">
 <android.support.v7.widget.RecyclerView
     android:id="@+id/rv"
     android:layout_width="match_parent"
@@ -22,6 +17,6 @@ app:layout_behavior="@string/appbar_scrolling_view_behavior">
     android:paddingBottom="5dp"
     android:clipToPadding="false"
     android:clipChildren="false"
-    tools:listitem="@layout/card"/>
-
+    tools:listitem="@layout/cardmain"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

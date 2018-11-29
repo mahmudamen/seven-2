@@ -4,20 +4,22 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -51,9 +53,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.muddzdev.styleabletoastlibrary.StyleableToast;
 import com.nhaarman.supertooltips.ToolTipRelativeLayout;
 import com.nhaarman.supertooltips.ToolTipView;
 import com.readystatesoftware.viewbadger.BadgeView;
+import com.stone.vega.library.VegaLayoutManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,6 +83,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
     DatabaseReference myRef ;
     List<PhotoModel> list;
     List<PhotoModel> lists;
+    List<PhotoModel> sale;
     int totalUsers = 0;
     final static  ArrayList<String> al = new ArrayList<>();
     final static ArrayList<String> vid = new ArrayList<>();
@@ -86,6 +91,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
     RecyclerView recycle;
     DatabaseReference reference4;
     ImageButton view;
+    Context context;
     CircleButton btnAnim1,btnAnim2,btnAnim3,btnAnim4,btnAnim5;
     BadgeView badge1,badge2,badge3,badge4;
     BadgeView labelbadge1,labelbadge2,labelbadge3,labelbadge4,labelbadge5;
@@ -98,10 +104,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
     ImageView gbg;
     CircleButton button1,button2,button3,button4,button5,button6,button10,button11;
     boolean isOpen = false;
-    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference mtitmainRef = mRootRef.child("titmain");
-    DatabaseReference getcontmainRef = mRootRef.child("contmain");
-    DatabaseReference mbg = mRootRef.child("bgmain");
+
     int badgeCount = 1;
     static boolean isInitialized = false;
     ToolTipRelativeLayout toolTipRelativeLayout;
@@ -111,15 +114,21 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_horizontal_ntb);
+      final  ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+      final   NetworkInfo currentNetworkInfo = cm.getActiveNetworkInfo();
+      context = getBaseContext();
+    //    onStarted();
         try{
             if(!isInitialized){
-                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo currentNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
                 Firebase.setAndroidContext(this);
                 FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-
                 isInitialized = true;
+                DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference mtitmainRef = mRootRef.child("titmain");
+                DatabaseReference getcontmainRef = mRootRef.child("contmain");
+                DatabaseReference mbg = mRootRef.child("bgmain");
 
             }else {
                 Log.d(TAG,"Already Initialized");
@@ -128,9 +137,14 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
             e.printStackTrace();
         }
         database = FirebaseDatabase.getInstance();
-        Query myRef = database.getReference("News").orderByChild("id");
-        myRef.keepSynced(true);
-        myRef.addValueEventListener(new ValueEventListener() {
+        Query myRefNews = database.getReference("News").orderByChild("id");
+        Query myRefWater = database.getReference("WaterFront").orderByChild("id");
+        Query myRefHouse = database.getReference("House").orderByChild("id");
+        Query myRefProj = database.getReference("ProjectActivity").orderByChild("id");
+        Query myRefSales = database.getReference("SalesActivity").orderByChild("id");
+
+
+        myRefNews.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -166,12 +180,159 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                 Log.w("Hello", "Failed to read value.", error.toException());
             }
         });
+        myRefWater.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                lists = new ArrayList<PhotoModel>();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                    PhotoModel value = dataSnapshot1.getValue(PhotoModel.class);
+                    PhotoModel photo = new PhotoModel();
+                    int id = value.getId();
+                    String title = value.getTitle();
+                    String shortdesc = value.getShortdesc();
+                    String day = value.getDayx();
+                    String date = value.getDate();
+                    String image = value.getImage();
+                    String liq = value.getLiqo();
+                    String longdesc = value.getLongdesc();
+
+                    photo.setId(id);
+                    photo.setTitle(title);
+                    photo.setShortdesc(shortdesc);
+                    photo.setDayx(day);
+                    photo.setDate(date);
+                    photo.setImage(image);
+                    photo.setLiqo(liq);
+                    photo.setLongdesc(longdesc);
+                    lists.add(photo);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Hello", "Failed to read value.", error.toException());
+            }
+        });
+        myRefHouse.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                hos = new ArrayList<PhotoModel>();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                    PhotoModel value = dataSnapshot1.getValue(PhotoModel.class);
+                    PhotoModel photo = new PhotoModel();
+                    int id = value.getId();
+                    String title = value.getTitle();
+                    String shortdesc = value.getShortdesc();
+                    String day = value.getDayx();
+                    String date = value.getDate();
+                    String image = value.getImage();
+
+                    photo.setId(id);
+                    photo.setTitle(title);
+                    photo.setShortdesc(shortdesc);
+                    photo.setDayx(day);
+                    photo.setDate(date);
+                    photo.setImage(image);
+                    hos.add(photo);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        myRefProj.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                proj = new ArrayList<PhotoModel>();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                    PhotoModel value = dataSnapshot1.getValue(PhotoModel.class);
+                    PhotoModel photo = new PhotoModel();
+                    int id = value.getId();
+                    String title = value.getTitle();
+                    String shortdesc = value.getShortdesc();
+                    String day = value.getDayx();
+                    String date = value.getDate();
+                    String image = value.getImage();
+
+                    photo.setId(id);
+                    photo.setTitle(title);
+                    photo.setShortdesc(shortdesc);
+                    photo.setDayx(day);
+                    photo.setDate(date);
+                    photo.setImage(image);
+                    proj.add(photo);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        myRefSales.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                sale = new ArrayList<PhotoModel>();
+                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+
+                    PhotoModel value = dataSnapshot1.getValue(PhotoModel.class);
+                    PhotoModel photo = new PhotoModel();
+                    int id = value.getId();
+                    String title = value.getTitle();
+                    String shortdesc = value.getShortdesc();
+                    String day = value.getDayx();
+                    String date = value.getDate();
+                    String image = value.getImage();
+
+                    photo.setId(id);
+                    photo.setTitle(title);
+                    photo.setShortdesc(shortdesc);
+                    photo.setDayx(day);
+                    photo.setDate(date);
+                    photo.setImage(image);
+                    sale.add(photo);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        myRefNews.keepSynced(true);
+        myRefWater.keepSynced(true);
+        myRefHouse.keepSynced(true);
+        myRefProj.keepSynced(true);
+        myRefSales.keepSynced(true);
         initUI();
-
-
-
+        //handling each floating action button clicked
+        FabButton();
+        fabDelete.setOnClickListener(onButtonClick());
+        fabEdit.setOnClickListener(onButtonClick());
+        fabAdd.setOnClickListener(onButtonClick());
+        firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() == null){
+        }
+        else
+            {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                TextView textView =findViewById(R.id.username);
+                textView.setText("Welcome "+  usernameFromEmail(user.getEmail()));
+        }
     }
-
+    protected void onStart(){
+        super.onStart();
+        if (isConnected(context)){
+         //  setAutoUpdate();
+        }
+    }
     private void initUI() {
         final ViewPager viewPager = (ViewPager) findViewById(R.id.vp_horizontal_ntb);
         viewPager.setAdapter(new PagerAdapter() {
@@ -179,91 +340,164 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
             public int getCount() {
                 return 5;
             }
-
             @Override
             public boolean isViewFromObject(final View view, final Object object) {
                 return view.equals(object);
             }
-
             @Override
             public void destroyItem(final View container, final int position, final Object object) {
                 ((ViewPager) container).removeView((View) object);
             }
-
             @Override
             public Object instantiateItem(final ViewGroup container, final int position) {
                 final View view = LayoutInflater.from(
                         getBaseContext()).inflate(R.layout.item_vp, null, false);
-
+                final SwipeRefreshLayout mSwipeRefreshLayout;
+                mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipyrefreshlayout);
                 final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv);
-                recyclerView.setHasFixedSize(true);
+                recyclerView.setHasFixedSize(false);
                 recyclerView.setLayoutManager(new LinearLayoutManager(
-                                getBaseContext(), LinearLayoutManager.VERTICAL, false
-                        )
-                );
-
-                MainAdapter recyclerAdapter = new MainAdapter(list, HorizontalNtbActivity.this);
-             //   RecyclerView.LayoutManager recyce = new GridLayoutManager(HorizontalNtbActivity.this, 1);
-            //    recycle.setLayoutManager(recyce);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                recyclerView.setAdapter(recyclerAdapter);
-
+                                getBaseContext(), LinearLayoutManager.VERTICAL, false ));
+                recyclerView.setLayoutManager(new VegaLayoutManager());
+                    if(position == 0 ){
+                        MainAdapter recyclerAdapter = new MainAdapter(sale, HorizontalNtbActivity.this);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(recyclerAdapter);
+                    }else if(position == 1){
+                        boolean success = ShortcutBadger.removeCount(HorizontalNtbActivity.this);
+                        MainAdapter recyclerAdapter = new MainAdapter(proj, HorizontalNtbActivity.this);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(recyclerAdapter);
+                    }else if(position == 2){
+                        MainAdapter recyclerAdapter = new MainAdapter(list, HorizontalNtbActivity.this);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(recyclerAdapter);
+                    }else if(position == 3){
+                        MainAdapter recyclerAdapter = new MainAdapter(hos, HorizontalNtbActivity.this);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(recyclerAdapter);
+                } else {
+                        MainAdapter recyclerAdapter = new MainAdapter(lists, HorizontalNtbActivity.this);
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(recyclerAdapter);
+                    }
                 container.addView(view);
+                mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                        final NetworkInfo currentNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(isConnected(context)){
+                                    try{
+                                        if(position == 0 ){
+                                            MainAdapter recyclerAdapter = new MainAdapter(sale, HorizontalNtbActivity.this);
+                                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                            recyclerView.setAdapter(recyclerAdapter);
+                                            mSwipeRefreshLayout.setRefreshing(false);
+                                        }else if(position == 1){
+                                            boolean success = ShortcutBadger.removeCount(HorizontalNtbActivity.this);
+                                            MainAdapter recyclerAdapter = new MainAdapter(proj, HorizontalNtbActivity.this);
+                                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                            recyclerView.setAdapter(recyclerAdapter);
+                                            mSwipeRefreshLayout.setRefreshing(false);
+                                        }else if(position == 2){
+                                            MainAdapter recyclerAdapter = new MainAdapter(list, HorizontalNtbActivity.this);
+                                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                            recyclerView.setAdapter(recyclerAdapter);
+                                            mSwipeRefreshLayout.setRefreshing(false);
+                                        }else if(position == 3){
+                                            MainAdapter recyclerAdapter = new MainAdapter(hos, HorizontalNtbActivity.this);
+                                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                            recyclerView.setAdapter(recyclerAdapter);
+                                            mSwipeRefreshLayout.setRefreshing(false);
+                                        } else {
+                                            MainAdapter recyclerAdapter = new MainAdapter(lists, HorizontalNtbActivity.this);
+                                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                            recyclerView.setAdapter(recyclerAdapter);
+                                            mSwipeRefreshLayout.setRefreshing(false);
+                                        }
+                                    }catch (Exception e){
+                                        run();
+                                    }
+                                }else{
+                                    if(mSwipeRefreshLayout.isRefreshing()){
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    }
+                                }
+
+                            }
+                        },2550);
+                    }
+                });
                 return view;
             }
         });
-
         final String[] colors = getResources().getStringArray(R.array.default_preview);
-
         final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb_horizontal);
         final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
         models.add(
                 new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_first),
+                        getResources().getDrawable(R.drawable.ic_new_releases_black_48dp),
                         Color.parseColor(colors[0]))
-                        .title("Heart")
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_new_releases_black_48dp))
+                        .title("اعلانات")
+                        .badgeTitle("طرح")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_second),
+                        getResources().getDrawable(R.drawable.ic_trending_up_black_48dp),
                         Color.parseColor(colors[1]))
-                        .title("Cup")
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_trending_up_black_48dp))
+                        .title("مشروعات")
+                        .badgeTitle("متجدد")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_third),
+                        getResources().getDrawable(R.drawable.ic_home_black_48dp),
                         Color.parseColor(colors[2]))
-                        .title("Diploma")
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_home_black_48dp))
+                        .title("اخبار")
+                        .badgeTitle("جديدة")
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_fourth),
+                        getResources().getDrawable(R.drawable.ic_business_black_48dp),
                         Color.parseColor(colors[3]))
-                        .title("Flag")
+                        .title("الاسكان")
+                        .badgeTitle("الاجتماعي")
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_business_black_48dp))
                         .build()
         );
         models.add(
                 new NavigationTabBar.Model.Builder(
-                        getResources().getDrawable(R.drawable.ic_fifth),
+                        getResources().getDrawable(R.drawable.ic_whatshot_black_48dp),
                         Color.parseColor(colors[4]))
-                        .title("Medal")
+                        .title("السياحي")
+                        .badgeTitle("جديد")
+                        .selectedIcon(getResources().getDrawable(R.drawable.ic_whatshot_black_48dp))
                         .build()
         );
-
         navigationTabBar.setModels(models);
         navigationTabBar.setViewPager(viewPager, 2);
-
+        navigationTabBar.setTitleMode(NavigationTabBar.TitleMode.ACTIVE);
+        navigationTabBar.setBgColor(Color.parseColor("#ffc425"));
+        navigationTabBar.setIsTitled(true);
+        navigationTabBar.setIsTinted(false);
+        navigationTabBar.setIsBadgeUseTypeface(true);
         //IMPORTANT: ENABLE SCROLL BEHAVIOUR IN COORDINATOR LAYOUT
         navigationTabBar.setBehaviorEnabled(true);
-
         navigationTabBar.setOnTabBarSelectedIndexListener(new NavigationTabBar.OnTabBarSelectedIndexListener() {
             @Override
             public void onStartTabSelected(final NavigationTabBar.Model model, final int index) {
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo currentNetworkInfo = connectivityManager.getActiveNetworkInfo();
             }
-
             @Override
             public void onEndTabSelected(final NavigationTabBar.Model model, final int index) {
                 model.hideBadge();
@@ -272,19 +506,32 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
         navigationTabBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
-
             }
-
             @Override
             public void onPageSelected(final int position) {
-
+                navigationTabBar.getModels().get(position).hideBadge();
             }
-
             @Override
             public void onPageScrollStateChanged(final int state) {
-
+               fam.hideMenu(true);
             }
         });
+        navigationTabBar.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < navigationTabBar.getModels().size(); i++) {
+                    final NavigationTabBar.Model model = navigationTabBar.getModels().get(i);
+                    navigationTabBar.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            model.showBadge();
+//                            fam.showMenu(true);
+
+                        }
+                    }, i * 100);
+                }
+            }
+        }, 500);
 
         final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.parent);
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
@@ -292,6 +539,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
             public void onClick(final View v) {
                 for (int i = 0; i < navigationTabBar.getModels().size(); i++) {
                     final NavigationTabBar.Model model = navigationTabBar.getModels().get(i);
+
                     navigationTabBar.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -299,7 +547,8 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                             if (!model.isBadgeShowed()) {
                                 model.setBadgeTitle(title);
                                 model.showBadge();
-                            } else model.updateBadgeTitle(title);
+
+                            } else model.updateBadgeTitle(title); fam.showMenu(true);
                         }
                     }, i * 100);
                 }
@@ -307,11 +556,12 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                 coordinatorLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        final Snackbar snackbar = Snackbar.make(navigationTabBar, "Coordinator NTB", Snackbar.LENGTH_SHORT);
-                        snackbar.getView().setBackgroundColor(Color.parseColor("#9b92b3"));
+                        final Snackbar snackbar = Snackbar.make(navigationTabBar, "مرحبا بكم في أسوان الجديدة", Snackbar.LENGTH_SHORT);
+                        snackbar.getView().setBackgroundColor(Color.parseColor("#423752"));
                         ((TextView) snackbar.getView().findViewById(R.id.snackbar_text))
-                                .setTextColor(Color.parseColor("#423752"));
+                                .setTextColor(Color.parseColor("#f77805"));
                         snackbar.show();
+                        fam.showMenu(true);
                     }
                 }, 1000);
             }
@@ -319,236 +569,34 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
 
         final CollapsingToolbarLayout collapsingToolbarLayout =
                 (CollapsingToolbarLayout) findViewById(R.id.toolbar);
-        collapsingToolbarLayout.setExpandedTitleColor(Color.parseColor("#009F90AF"));
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.parseColor("#9f90af"));
+        collapsingToolbarLayout.setExpandedTitleColor(Color.parseColor("#ffc425"));
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.parseColor("#3e0074"));
     }
+    public  boolean isConnected(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo currentNetworkInfo = cm.getActiveNetworkInfo();
 
+        if(cm.getActiveNetworkInfo() != null
+                && cm.getActiveNetworkInfo().isAvailable()
+                && cm.getActiveNetworkInfo().isConnected()){
+            snackBar();
+            return false;
+
+        }else {
+
+            return true;
+        }
+
+    }
     @Override
     public void onClick(View v) {
-
     }
     private String usernameFromEmail(String email) {
         if (email.contains("@")) {
             return email.split("@")[0];
         } else {
             return email;
-        }
-    }
-    public void loaddate(NetworkInfo currentNetworkInfo){
-        final Toast j = Toast.makeText(this,"تأكد من الاتصال بالانترنت ",Toast.LENGTH_SHORT);
-        final Toast x = Toast.makeText(this,"جاري تحميل البيانات",Toast.LENGTH_LONG);
-        if(currentNetworkInfo == null ){
-
-            j.show();
-        }else {
-            x.show();
-            MainAdapter recyclerAdapter = new MainAdapter(list, HorizontalNtbActivity.this);
-            RecyclerView.LayoutManager recyce = new GridLayoutManager(HorizontalNtbActivity.this, 1);
-            recycle.setLayoutManager(recyce);
-            recycle.setItemAnimator(new DefaultItemAnimator());
-            recycle.setAdapter(recyclerAdapter);
-            //progressDialog.dismiss();
-        }
-    }
-    public void loaddatewater(NetworkInfo currentNetworkInfo){
-        final Toast j = Toast.makeText(this,"تأكد من الاتصال بالانترنت ",Toast.LENGTH_SHORT);
-        final Toast x = Toast.makeText(this,"جاري تحميل البيانات",Toast.LENGTH_LONG);
-        if(currentNetworkInfo == null ){
-
-            j.show();
-        }else {
-            x.show();
-            database = FirebaseDatabase.getInstance();
-
-            Query myRef = database.getReference("WaterFront").orderByChild("id");
-            myRef.keepSynced(true);
-            final Toast toast = Toast.makeText(this, "تحديث البيانات", Toast.LENGTH_LONG);
-
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    lists = new ArrayList<PhotoModel>();
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-                        PhotoModel value = dataSnapshot1.getValue(PhotoModel.class);
-                        PhotoModel photo = new PhotoModel();
-                        int id = value.getId();
-                        String title = value.getTitle();
-                        String shortdesc = value.getShortdesc();
-                        String day = value.getDayx();
-                        String date = value.getDate();
-                        String image = value.getImage();
-
-                        photo.setId(id);
-                        photo.setTitle(title);
-                        photo.setShortdesc(shortdesc);
-                        photo.setDayx(day);
-                        photo.setDate(date);
-                        photo.setImage(image);
-                        lists.add(photo);
-                        if(photo.id == 1){
-
-                            badge2.setText("جديد");
-                            badge2.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-                            badge2.setBadgeMargin(0, 0);
-                            badge2.setBadgeBackgroundColor(Color.RED);
-
-
-                            TranslateAnimation anim = new TranslateAnimation(-100, 0, 0, 0);
-                            anim.setInterpolator(new BounceInterpolator());
-                            anim.setDuration(1000);
-                            badge2.toggle(anim, null);
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    Log.w("Hello", "Failed to read value.", error.toException());
-                }
-            });
-
-            WaterAdapter waterFrontAdapter = new WaterAdapter(lists, HorizontalNtbActivity.this );
-            RecyclerView.LayoutManager recyce = new GridLayoutManager(HorizontalNtbActivity.this, 1);
-            recycle.setLayoutManager(recyce);
-            recycle.setItemAnimator(new DefaultItemAnimator());
-            recycle.setAdapter(waterFrontAdapter);
-            //progressDialog.dismiss();
-        }
-    }
-    public void loadpro(NetworkInfo currentNetworkInfo){
-        final Toast j = Toast.makeText(this,"تأكد من الاتصال بالانترنت ",Toast.LENGTH_SHORT);
-        if(currentNetworkInfo == null ){
-
-            j.show();
-        }else {
-
-            database = FirebaseDatabase.getInstance();
-
-            Query myRef = database.getReference("ProjectActivity").orderByChild("id");
-            myRef.keepSynced(true);
-            final Toast toast = Toast.makeText(this, "تحديث البيانات", Toast.LENGTH_LONG);
-
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    proj = new ArrayList<PhotoModel>();
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-                        PhotoModel value = dataSnapshot1.getValue(PhotoModel.class);
-                        PhotoModel photo = new PhotoModel();
-                        int id = value.getId();
-                        String title = value.getTitle();
-                        String shortdesc = value.getShortdesc();
-                        String day = value.getDayx();
-                        String date = value.getDate();
-                        String image = value.getImage();
-
-                        photo.setId(id);
-                        photo.setTitle(title);
-                        photo.setShortdesc(shortdesc);
-                        photo.setDayx(day);
-                        photo.setDate(date);
-                        photo.setImage(image);
-                        proj.add(photo);
-                        if(photo.id == 1){
-
-                            badge3.setText("جديد");
-                            badge3.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-                            badge3.setBadgeMargin(0, 0);
-                            badge3.setBadgeBackgroundColor(Color.RED);
-
-                            TranslateAnimation anim = new TranslateAnimation(-100, 0, 0, 0);
-                            anim.setInterpolator(new BounceInterpolator());
-                            anim.setDuration(1000);
-                            badge3.toggle(anim, null);
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    Log.w("Hello", "Failed to read value.", error.toException());
-                }
-            });
-
-            ProAdapter proAdapter = new ProAdapter(proj, HorizontalNtbActivity.this );
-            RecyclerView.LayoutManager recyce = new GridLayoutManager(HorizontalNtbActivity.this, 1);
-            recycle.setLayoutManager(recyce);
-            recycle.setItemAnimator(new DefaultItemAnimator());
-            recycle.setAdapter(proAdapter);
-            //progressDialog.dismiss();
-        }
-    }
-    public void loadhos(NetworkInfo currentNetworkInfo){
-        final Toast j = Toast.makeText(this,"تأكد من الاتصال بالانترنت ",Toast.LENGTH_SHORT);
-        final Toast x = Toast.makeText(this,"جاري تحميل البيانات",Toast.LENGTH_LONG);
-        if(currentNetworkInfo == null ){
-
-            j.show();
-        }else {
-            x.show();
-            database = FirebaseDatabase.getInstance();
-
-            Query myRef = database.getReference("House").orderByChild("id");
-            myRef.keepSynced(true);
-            final Toast toast = Toast.makeText(this, "تحديث البيانات", Toast.LENGTH_LONG);
-
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // This method is called once with the initial value and again
-                    // whenever data at this location is updated.
-                    hos = new ArrayList<PhotoModel>();
-                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-
-                        PhotoModel value = dataSnapshot1.getValue(PhotoModel.class);
-                        PhotoModel photo = new PhotoModel();
-                        int id = value.getId();
-                        String title = value.getTitle();
-                        String shortdesc = value.getShortdesc();
-                        String day = value.getDayx();
-                        String date = value.getDate();
-                        String image = value.getImage();
-
-                        photo.setId(id);
-                        photo.setTitle(title);
-                        photo.setShortdesc(shortdesc);
-                        photo.setDayx(day);
-                        photo.setDate(date);
-                        photo.setImage(image);
-                        hos.add(photo);
-                        if(photo.id == 1){
-
-                            badge4.setText("جديد");
-                            badge4.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
-                            badge4.setBadgeMargin(0, 0);
-                            badge4.setBadgeBackgroundColor(Color.RED);
-
-                            TranslateAnimation anim = new TranslateAnimation(-100, 0, 0, 0);
-                            anim.setInterpolator(new BounceInterpolator());
-                            anim.setDuration(1000);
-                            badge4.toggle(anim, null);
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    Log.w("Hello", "Failed to read value.", error.toException());
-                }
-            });
-
-            HosAdapter hosAdapter = new HosAdapter(hos, HorizontalNtbActivity.this );
-            RecyclerView.LayoutManager recyce = new GridLayoutManager(HorizontalNtbActivity.this, 1);
-            recycle.setLayoutManager(recyce);
-            recycle.setItemAnimator(new DefaultItemAnimator());
-            recycle.setAdapter(hosAdapter);
-            //progressDialog.dismiss();
         }
     }
     public void getbudget(int id){
@@ -573,7 +621,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                     anim.setDuration(1000);
                     labelbadge1.toggle(anim, null);
                     recycle.setVisibility(View.VISIBLE);
-                    loaddate(currentNetworkInfo);
+                  //  loaddate(currentNetworkInfo);
                 }
             });
             TranslateAnimation anim = new TranslateAnimation(-100, 0, 0, 0);
@@ -599,7 +647,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                     anim.setDuration(1000);
                     labelbadge2.toggle(anim, null);
                     recycle.setVisibility(View.VISIBLE);
-                    loaddatewater(currentNetworkInfo);
+                //    loaddatewater(currentNetworkInfo);
                 }
             });
             TranslateAnimation anim = new TranslateAnimation(-100, 0, 0, 0);
@@ -625,7 +673,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                     anim.setDuration(1000);
                     labelbadge3.toggle(anim, null);
                     recycle.setVisibility(View.VISIBLE);
-                    loadpro(currentNetworkInfo);
+                 //   loadpro(currentNetworkInfo);
                 }
             });
             TranslateAnimation anim = new TranslateAnimation(-100, 0, 0, 0);
@@ -652,7 +700,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                     anim.setDuration(1000);
                     labelbadge4.toggle(anim, null);
                     recycle.setVisibility(View.VISIBLE);
-                    loadhos(currentNetworkInfo);
+                //    loadhos(currentNetworkInfo);
                 }
             });
             TranslateAnimation anim = new TranslateAnimation(-100, 0, 0, 0);
@@ -687,9 +735,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
             anim.setDuration(1000);
             labelbadge5.toggle(anim, null);
             boolean success = ShortcutBadger.removeCount(HorizontalNtbActivity.this);
-
         }
-
     }
     private void setAutoUpdate() {
         new UpdateHandler.Builder(this)
@@ -725,32 +771,47 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
     }
     private boolean chatMess (){
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        final String theUser = usernameFromEmail(currentUser.getEmail());
-
-
-        String url = "https://seven-1810b.firebaseio.com/users.json";
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>(){
-            @Override
-            public void onResponse(String s) {
-                if(doOnSuccess(s,theUser)==true){
-                    startService(
-                            new Intent(HorizontalNtbActivity.this, BadgeIntentService.class).putExtra("badgeCount", 0)
-                    );
+        if(currentUser == null){
+            return false;
+        }else {
+            final String theUser = usernameFromEmail(currentUser.getEmail());
+            TextView textView =findViewById(R.id.username);
+            textView.setText("Wellcome " + theUser);
+            String url = "https://seven-1810b.firebaseio.com/users.json";
+            StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>(){
+                @Override
+                public void onResponse(String s) {
+                    if(doOnSuccess(s,theUser)==true){
+                        startService(
+                                new Intent(HorizontalNtbActivity.this, BadgeIntentService.class).putExtra("badgeCount", 0)
+                        );
+                    }
                 }
-            }
-        },new Response.ErrorListener(){
+            },new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    System.out.println("" + volleyError);
+                }
+            });
+
+            RequestQueue rQueue = Volley.newRequestQueue(HorizontalNtbActivity.this);
+            rQueue.add(request);
+            return true;
+        }
+    }
+    private void data(){
+        String url = "https://seven-1810b.firebaseio.com/News.json";
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                System.out.println("" + volleyError);
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("" + error);
             }
         });
-
-        RequestQueue rQueue = Volley.newRequestQueue(HorizontalNtbActivity.this);
-        rQueue.add(request);
-
-
-        return true;
     }
     private class AsyncTaskRunner extends AsyncTask<String, String, String> {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -764,7 +825,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                 try {
 
                     // Sleep for 5 seconds
-                    Thread.sleep(2 * 100000);
+                    Thread.sleep(2 * 10000);
                 } catch (InterruptedException e) {
                     Log.d("TAG", "sleep failure");
                 }
@@ -778,7 +839,7 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
 
 
             }else {
-                chatMess();
+              //  chatMess();
             }
         }
     }
@@ -791,8 +852,6 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
             String key = "";
             String value = "";
             int m = 0;
-
-
             while(i.hasNext()){
                 key = i.next().toString();
                 value = obj.getJSONObject(key).getString("chat");
@@ -814,32 +873,113 @@ public class HorizontalNtbActivity extends AppCompatActivity implements  View.On
                 }
                 totalUsers++;
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
         }
-
         return true;
     }
     private void onStarted(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo currentNetworkInfo = connectivityManager.getActiveNetworkInfo();
         if(currentNetworkInfo == null){
-
         }else{
             setAutoUpdate();
-
             //  startService(new Intent(MainActivity.this,FirebaseBackgroundService.class));
             Intent serviceIntent  = new Intent("com.newaswan.seven");
             serviceIntent.setPackage(".FirebaseBackgroundService");
             //    startService(serviceIntent);
             //  startService(new Intent(FirebaseBackgroundService.class.getName()));
             //  serviceIntent.setPackage("");
-
             HorizontalNtbActivity.AsyncTaskRunner runner = new HorizontalNtbActivity.AsyncTaskRunner();
             runner.execute();
         }
+    }
+    public void FabButton(){
+        fabAdd = (FloatingActionButton) findViewById(R.id.fab2);
+        fabDelete = (FloatingActionButton) findViewById(R.id.fab3);
+        fabEdit = (FloatingActionButton) findViewById(R.id.fab1);
+        fam = (FloatingActionMenu) findViewById(R.id.fab_menu);
+        fam.setMenuButtonColorNormal(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov));
+        fam.setMenuButtonColorPressed(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fam.setMenuButtonColorRipple(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabAdd.setColorNormal(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov));
+        fabAdd.setColorPressed(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabAdd.setColorRipple(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabDelete.setColorNormal(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov));
+        fabDelete.setColorPressed(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabDelete.setColorRipple(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabEdit.setColorNormal(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov));
+        fabEdit.setColorPressed(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabEdit.setColorRipple(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabAdd.setLabelColors(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov),ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange),ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov));
+        fabEdit.setLabelColors(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov),ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange),ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov));
+        fabDelete.setLabelColors(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov),ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange),ContextCompat.getColor(getApplicationContext(), R.color.app_primary_mov));
+        fabAdd.setLabelTextColor(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabEdit.setLabelTextColor(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fabDelete.setLabelTextColor(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_orange));
+        fam.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean opened) {
+                if (opened) {
+                    // showToast("");
+                    //   fam.setMenuButtonColorNormal(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_dark));
+                } else {
+                    //  showToast("Menu is closed");
+                    //  fam.setMenuButtonColorNormal(ContextCompat.getColor(getApplicationContext(), R.color.app_primary_dark));
+                }
+            }
+        });
 
+        fam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (fam.isOpened()) {
+                    fam.close(true);
+                }
+            }
+        });
+
+
+    }
+    private void snackBar(){
+        //   Toasty.info(this, "تأكد من الاتصال بالانترنت", Toast.LENGTH_SHORT, true).show();
+        final Typeface font = Typeface.createFromAsset(getAssets(), "fonts/boahmed-alhour-ar.ttf");
+        final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb_horizontal);
+        final Snackbar snackbar = Snackbar.make(navigationTabBar, "تأكد من الاتصال بالانترنت", Snackbar.LENGTH_SHORT);
+        snackbar.getView().setBackgroundColor(Color.parseColor("#ff0000"));
+        ((TextView) snackbar.getView().findViewById(R.id.snackbar_text))
+                .setTextColor(Color.parseColor("#ffffff"));
+        ((TextView) snackbar.getView().findViewById(R.id.snackbar_text)).setTypeface(font);
+        snackbar.show();
+    }
+    private View.OnClickListener onButtonClick() {
+        final Intent i = new Intent(this,SinginActivity.class);
+        final Intent ie = new Intent(this,MapsActivity.class);
+        final Intent iee = new Intent(this,ChatActivity.class);
+        final Intent bnew = new Intent(this,NewsActivity.class);
+        final StyleableToast toastmap = StyleableToast.makeText(this,"خريطة المدينة",Toast.LENGTH_SHORT,R.style.MyToast);
+        final StyleableToast toastchat = StyleableToast.makeText(this,"سيتم تشغيل خدمة الدردشة قريباً",Toast.LENGTH_SHORT,R.style.MyToast);
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view == fabAdd) {
+                    //   showToast("Button Add clicked");
+                    toastmap.show();
+                    startActivity(ie);
+
+                } else if (view == fabDelete) {
+                    //    showToast("Button Delete clicked");
+                    startActivity(i);
+
+                } else if(view == fabEdit) {
+                    //    showToast("Button Edit clicked");
+                 //   startActivity(iee);
+                    toastchat.show();
+                }else {
+                }
+                fam.close(true);
+            }
+        };
     }
 }

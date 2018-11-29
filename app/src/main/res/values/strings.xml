@@ -1,0 +1,221 @@
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+
+    <string name="title_activity_main">New Aswan App</string>
+
+        <style name="Theme.Transparent" parent="android:Theme">
+            <item name="android:windowIsTranslucent">true</item>
+            <item name="android:windowBackground">@android:color/transparent</item>
+            <item name="android:windowContentOverlay">@null</item>
+            <item name="android:windowNoTitle">true</item>
+            <item name="android:windowIsFloating">true</item>
+            <item name="android:backgroundDimEnabled">false</item>
+        </style>
+
+
+    <string name="action_settings">خدمة العملاء </string>
+    <string name="action_about">نبذة </string>
+
+
+    <string name="app_name">AswanApp</string>
+    <string name="title_activity_maps">خريطة المدينة</string>
+    <string name="default_notification_channel_id">noti</string>
+
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main7">Main7Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="facebook_app_id">561800487496918</string>
+    <string name="fb_login_protocol_scheme">fb561800487496918</string>
+    <string name="FACEBOOK_APP_ID">0</string>
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">0</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_maps2">Map</string>
+    <string name="about">ar</string>
+    <string name="lorem_ipsum">اعلانات تجارية</string>
+    <string name="recyclerview_fab_example">خريطة المدينة</string>
+    <string name="floating_action_menu">Floating Action Menu</string>
+    <string name="lorem_ipsum_large">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed ultricies risus. Integer nisi orci, lacinia sit amet mi in, mollis scelerisque purus. Nunc risus ligula, maximus eu orci a, facilisis dictum velit. Proin nec laoreet magna. Nulla ut sagittis lorem. Morbi id enim fermentum, semper diam et, tempus leo. Aliquam vel congue orci. Suspendisse potenti. Curabitur finibus diam augue, vel bibendum sapien ultrices non.</string>
+    <string name="navigation_drawer_open">Navigation open</string>
+    <string name="navigation_drawer_close">Navigation close</string>
+
+    <string-array name="examples">
+        <item>خريطة المدينة</item>
+        <item> خدمة العملاء </item>
+        <item>خدمة عملاء الاسكان الاجتماعي</item>
+        <item>مدرسة النيل</item>
+        <item>الاسكان الاجتماعي </item>
+        <item>مستشفي مجدي يعقوب</item>
+        <item> اعلانات طرح الاراضي  </item>
+        <item> مشروعات المدينة </item>
+        <item>معهد ازهري</item>
+        <item>مركز صحي حضري</item>
+        <item>تم افتتاح قسم شرطة بالمدينة</item>
+        <item>مدرسة لغات </item>
+        <item>ملاعب كرة قدم خماسي </item>
+        <item>مستشفي ووحدة اسعاف</item>
+        <item>مسجد 100 مصلي </item>
+        <item>مكتب بريد</item>
+        <item>تنفيذ وحدات الاسكان الاجتماعي  </item>
+    </string-array>
+    <string name="title_activity_tab">TabActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+
+
+    <string name="text">Squid blog crucifix Marfa, consectetur vero placeat mixtape. Non seitan sriracha eu, do Banksy fashion axe cred qui vegan delectus consequat Helvetica mollit. XOXO gluten-free disrupt, gastropub officia cliche chillwave hella pop-up. Fixie swag raw denim, YOLO craft beer assumenda occupy veniam photo booth pug consectetur next level Portland tote bag +1. Mlkshk PBR aliquip placeat Wes Anderson.</string>
+    <string name="title">My Description</string>
+    <string name="context_menu">Context menu</string>
+    <string name="title_activity_main3">Main3Activity</string>
+    <string name="title_activity_city">CityActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+
+
+
+
+<!-- - - - - - - - - - - - - -->
+<!-- Used throughout Sunshine-->
+<!-- - - - - - - - - - - - - -->
+
+<!--Used in Action Bar, and in AndroidManifest to tell the device the name of this app.-->
+<!--It's good to keep this short, so your launcher icon isn't displayed with "The greatest Wea"-->
+<!--or something similar.-->
+
+
+
+<!-- - - - - - - - - - - - - -->
+<!--Used by SunshineDateUtils-->
+<!-- - - - - - - - - - - - - -->
+
+<!-- For labelling today's forecast [CHAR LIMIT=15] -->
+<string name="today">Today</string>
+
+<!-- For labelling tomorrow's forecast [CHAR LIMIT=15] -->
+<string name="tomorrow">Tomorrow</string>
+
+<!-- Date format [CHAR LIMIT=NONE] -->
+<string name="format_full_friendly_date">
+        <xliff:g id="month">%1$s</xliff:g>, <xliff:g id="day">%2$s</xliff:g>
+    </string>
+
+
+<!-- - - - - - - - - - - - - - - -->
+<!-- Used by SunshineWeatherUtils-->
+<!-- - - - - - - - - - - - - - - -->
+
+<!-- Temperature format in Celsius [CHAR LIMIT=5] -->
+<string name="format_temperature_celsius">
+        <xliff:g id="temp">%1.0f</xliff:g>\u00B0C
+    </string>
+
+<!-- Temperature format in Fahrenheit [CHAR LIMIT=5] -->
+<string name="format_temperature_fahrenheit">
+        <xliff:g id="temp">%1.0f</xliff:g>\u00B0F
+    </string>
+
+<!-- Wind in kph [CHAR LIMIT=25] -->
+<string name="format_wind_kmh">
+        <xliff:g id="speed">%1$1.0f</xliff:g> km/h <xliff:g id="direction">%2$s</xliff:g>
+    </string>
+
+<!-- Wind in mph [CHAR LIMIT=25] -->
+<string name="format_wind_mph">
+        <xliff:g id="speed">%1$1.0f</xliff:g> mph <xliff:g id="direction">%2$s</xliff:g>
+    </string>
+
+<!-- Weather Conditions (From OpenWeatherMap) -->
+<string name="condition_2xx">Storm</string>
+<string name="condition_3xx">Drizzle</string>
+<string name="condition_500">Light Rain</string>
+<string name="condition_501">Moderate Rain</string>
+<string name="condition_502">Heavy Rain</string>
+<string name="condition_503">Intense Rain</string>
+<string name="condition_504">Extreme Rain</string>
+<string name="condition_511">Freezing Rain</string>
+<string name="condition_520">Light Shower</string>
+<string name="condition_521">Shower</string>
+<string name="condition_522">Heavy Shower</string>
+<string name="condition_531">Ragged Shower</string>
+<string name="condition_600">Light Snow</string>
+<string name="condition_601">Snow</string>
+<string name="condition_602">Heavy Snow</string>
+<string name="condition_611">Sleet</string>
+<string name="condition_612">Shower Sleet</string>
+<string name="condition_615">Rain and Snow</string> <!-- light rain and snow -->
+<string name="condition_616">Rain and Snow</string>
+<string name="condition_620">Shower Snow</string> <!-- light shower snow -->
+<string name="condition_621">Shower Snow</string>
+<string name="condition_622">Shower Snow</string> <!-- heavy shower snow -->
+<string name="condition_701">Mist</string>
+<string name="condition_711">Smoke</string>
+<string name="condition_721">Haze</string>
+<string name="condition_731">Sand, Dust</string>
+<string name="condition_741">Fog</string>
+<string name="condition_751">Sand</string>
+<string name="condition_761">Dust</string>
+<string name="condition_762">Volcanic Ash</string>
+<string name="condition_771">Squalls</string>
+<string name="condition_781">Tornado</string>
+<string name="condition_800">Clear</string>
+<string name="condition_801">Mostly Clear</string>
+<string name="condition_802">Scattered Clouds</string>
+<string name="condition_803">Broken Clouds</string>
+<string name="condition_804">Overcast Clouds</string>
+<string name="condition_900">Tornado</string>
+<string name="condition_901">Tropical Storm</string>
+<string name="condition_902">Hurricane</string>
+<string name="condition_903">Cold</string>
+<string name="condition_904">Hot</string>
+<string name="condition_905">Windy</string>
+<string name="condition_906">Hail</string>
+<string name="condition_951">Calm</string>
+<string name="condition_952">Light Breeze</string>
+<string name="condition_953">Gentle Breeze</string>
+<string name="condition_954">Breeze</string> <!-- moderate breeze -->
+<string name="condition_955">Fresh Breeze</string>
+<string name="condition_956">Strong Breeze</string>
+<string name="condition_957">High Wind</string>
+<string name="condition_958">Gale</string>
+<string name="condition_959">Severe Gale</string>
+<string name="condition_960">Storm</string>
+<string name="condition_961">Violent Storm</string>
+<string name="condition_962">Hurricane</string>
+
+<string name="condition_unknown">Unknown (<xliff:g id="conditionId">%1$d</xliff:g>)</string>
+
+
+<!-- - - - - - - - - - - -->
+<!-- Used by NetworkUtils-->
+<!-- - - - - - - - - - - -->
+<!--NONE-->
+
+<!-- - - - - - - - - - - - - - - -->
+<!-- Used by OpenWeatherJsonUtils-->
+<!-- - - - - - - - - - - - - - - -->
+<!--NONE-->
+
+<!-- - - - - - - - - - - - - - -->
+<!--Used by SunshinePreferences-->
+<!-- - - - - - - - - - - - - - -->
+<!--NONE-->
+</resources>

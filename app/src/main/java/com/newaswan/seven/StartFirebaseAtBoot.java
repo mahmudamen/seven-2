@@ -13,6 +13,6 @@ public class StartFirebaseAtBoot extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
       //  context.startService(new Intent(FirebaseBackgroundService.class.getName()));
-        context.startService(new Intent(context, FirebaseBackgroundService.class));
+     //   context.startService(new Intent(context, FirebaseBackgroundService.class));
     }
 }

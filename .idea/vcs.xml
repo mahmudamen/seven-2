@@ -3,6 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="C:\Users\Anonymo\AndroidStudioProjects\seven\AswanApps" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/AswanApps" vcs="Git" />
   </component>
 </project>

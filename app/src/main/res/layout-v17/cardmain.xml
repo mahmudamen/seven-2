@@ -43,7 +43,6 @@
                 android:layout_toLeftOf="@id/imageView"
                 android:gravity="top|center"
                 android:text="عنوان"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#3e0074"
                 android:layout_margin="2dp"
                 android:textDirection="rtl"
@@ -59,7 +58,6 @@
                 android:layout_toLeftOf="@id/imageView"
                 android:layoutDirection="rtl"
                 android:text="مضمون"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#3e0074"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -74,7 +72,6 @@
                 android:layout_toLeftOf="@id/imageView"
                 android:layoutDirection="rtl"
                 android:text="جون"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#3e0074"
                 android:textSize="15sp"
                 android:visibility="gone" />
@@ -91,7 +88,6 @@
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"
                 android:text="جون"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#ff9900"
                 android:textSize="10sp"
                 android:textStyle="italic"
@@ -107,7 +103,7 @@
                 android:text=" "
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#ff9900"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/textViewPrice"
@@ -121,7 +117,7 @@
                 android:text=" "
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#ff9900"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
