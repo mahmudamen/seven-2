@@ -190,4 +190,12 @@ public  class WaterFront extends  AppCompatActivity   {
     }
 
 
+    public static class chatbot extends AppCompatActivity {
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_chatbot);
+        }
+    }
 }

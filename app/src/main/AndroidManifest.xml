@@ -4,7 +4,7 @@
     package="com.newaswan.seven">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-<!-- use_credentials -->
+    <!-- use_credentials -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -21,13 +21,13 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/lasticon"
         android:label="@string/app_name"
-        android:hardwareAccelerated="true"
+        android:largeHeap="true"
         android:roundIcon="@drawable/lasticon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:largeHeap="true"
         tools:replace="android:icon,android:theme,android:label">
         <meta-data
             android:name="com.google.android.gms.version"
@@ -45,19 +45,20 @@
         <activity
             android:name=".HorizontalNtbActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="AswanApp">
+            android:label="AswanApp"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".BadgeIntentService"
             android:enabled="true"
             android:exported="false"
-            android:process=":remote" >
+            android:process=":remote">
             <intent-filter>
                 <action android:name="com.newaswan.seven.BadgeIntentService" />
             </intent-filter>
@@ -66,16 +67,16 @@
             android:name=".FirebaseBackgroundService"
             android:enabled="true"
             android:exported="false"
-            android:process=":remote" >
+            android:process=":remote">
             <intent-filter>
                 <action android:name="com.newaswan.seven.FirebaseBackgroundService" />
             </intent-filter>
         </service>
-        <receiver android:name=".StartFirebaseAtBoot" >
+
+        <receiver android:name=".StartFirebaseAtBoot">
             <intent-filter>
                 <action android:name="com.android.techtrainner" />
-                <action android:name="android.intent.action.BOOT_COMPLETED" >
-                </action>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
         </receiver>
         <!--
@@ -89,6 +90,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
@@ -127,12 +129,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.newaswan.seven.HorizontalNtbActivity" />
         </activity>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -252,7 +256,8 @@
             android:name=".DetailActivity"
             android:parentActivityName=".HorizontalNtbActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Animation.AppCompat.Dialog" >
-            </activity>
+            android:theme="@style/Animation.AppCompat.Dialog"></activity>
+        <activity android:name=".chatbot"></activity>
     </application>
+
 </manifest>
